@@ -1,45 +1,76 @@
-version: "3.9"
-
 services:
-    db:
-      image: postgres:15-alpine
-      container_name: db_proyecto
-      environment:
-        POSTGRES_USER: user_devops
-        POSTGRES_PASSWORD: password123
-        POSTGRES_DB: base_datos_app
-      volumes:
-        - db_data:/var/lib/postgresql/data
-      networks:
-        - red_interna
+  db-ventas:
+    image: mysql:8.0
+    container_name: db-ventas
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: root123
+      MYSQL_DATABASE: tienda_Ventas
+      MYSQL_USER: user_devops
+      MYSQL_PASSWORD: password123
+    ports:
+      - "3307:3306"
+    volumes:
+      - db_ventas_data:/var/lib/mysql
+    networks:
+      - red_interna
 
-    back-ventas:
-      build: ./back-ventas_springboot
-      container_name: backend_ventas
-      environment:
-        SPRING_DATASOURCE_URL: jdbc:mysql://db-ventas:3306/tienda_Ventas
-        SPRING_DATASOURCE_USERNAME: user_devops
-        SPRING_DATASOURCE_PASSWORD: password123
-      depends_on:
-        - db
-      networks:
-        - red_interna
+  db-despachos:
+    image: mysql:8.0
+    container_name: db-despachos
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: root123
+      MYSQL_DATABASE: tienda_Despachos
+      MYSQL_USER: user_devops
+      MYSQL_PASSWORD: password123
+    ports:
+      - "3308:3306"
+    volumes:
+      - db_despachos_data:/var/lib/mysql
+    networks:
+      - red_interna
 
-    back-despachos:
-      build: ./back-despachos_springboot
-      container_name: backend_despachos
-      environment:
-        SPRING_DATASOURCE_URL: jdbc:mysql://db-ventas:3306/tienda_Despachos
-        SPRING_DATASOURCE_USERNAME: user_devops
-        SPRING_DATASOURCE_PASSWORD: password123
-      depends_on:
-        - db
-      networks:
-        - red_interna
+  back-ventas:
+    image: ${DOCKERHUB_USERNAME}/back-ventas_springboot:latest
+    container_name: backend_ventas
+    restart: unless-stopped
+    environment:
+      SERVER_PORT: 8080
+      DB_ENDPOINT: db-ventas
+      DB_PORT: 3306
+      DB_NAME: tienda_Ventas
+      DB_USERNAME: user_devops
+      DB_PASSWORD: password123
+    depends_on:
+      - db-ventas
+    ports:
+      - "3002:8080"
+    networks:
+      - red_interna
+
+  back-despachos:
+    image: ${DOCKERHUB_USERNAME}/back-despachos_springboot:latest
+    container_name: backend_despachos
+    restart: unless-stopped
+    environment:
+      SERVER_PORT: 8081
+      DB_ENDPOINT: db-despachos
+      DB_PORT: 3306
+      DB_NAME: tienda_Despachos
+      DB_USERNAME: user_devops
+      DB_PASSWORD: password123
+    depends_on:
+      - db-despachos
+    ports:
+      - "3003:8081"
+    networks:
+      - red_interna
 
 networks:
   red_interna:
     driver: bridge
 
 volumes:
-  db_data:
+  db_ventas_data:
+  db_despachos_data:
