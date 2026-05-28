@@ -141,7 +141,7 @@ jobs:
             docker exec db-despachos mysql -u user_devops -ppassword123 tienda_Despachos -e "SHOW TABLES;"
 
             echo "Limpiando imágenes no utilizadas..."
-            docker image prune -f
+            docker image prune -f 
 
             echo "Despliegue finalizado correctamente"
 
