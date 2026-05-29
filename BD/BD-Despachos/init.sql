@@ -33,5 +33,6 @@ INSERT INTO despachos
 VALUES
 (1, 'Av. Valparaíso 1234', 'Viña del Mar', 'Valparaíso', 'Región de Valparaíso', 'EN_PREPARACION'),
 (2, 'Los Carrera 456', 'Santiago Centro', 'Santiago', 'Región Metropolitana', 'PENDIENTE'),
-(4, 'Av. Alemania 321', 'Valparaíso', 'Valparaíso', 'Región de Valparaíso', 'EN_CAMINO');
+(4, 'Av. Alemania 321', 'Valparaíso', 'Valparaíso', 'Región de Valparaíso', 'EN_CAMINO'),
+(5, 'Av. Alemania 321', 'Valparaíso', 'Valparaíso', 'Región de Coquimbo', 'EN_CAMINO');
 
